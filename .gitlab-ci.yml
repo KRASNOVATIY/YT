@@ -1,0 +1,26 @@
+stages:
+  - testing
+
+test_script:
+  tags:
+    - host
+    - windows
+    - novirtualbox
+  stage: testing
+  before_script:
+    - py -V
+    - pip3 -V
+    - pip3 install --upgrade pip
+    - pip3 install apkutils
+    - pip3 install numpy
+  script:
+    - py unit_tests.py
+  allow_failure: false
+  except:
+    changes:
+      - tests.py
+      - readme.md
+      - app.py
+      - static/*
+      - templates/*
+

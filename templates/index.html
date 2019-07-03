@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/static/base.css">
+    <title>APK Analyze</title>
+    <link  rel="stylesheet" type="text/css" href="/static/bootstrap.css">
+    <script src="/static/jquery-1.js"></script>
+    <script src="/static/bootstrap.js"></script>
+    <link rel="shortcut icon" href="http://{{ server }}/static/favicon.ico" type="image/x-icon">
+    <script>
+        function bs_input_file() {
+            $('input[type=file]').change(function(e){
+                $('#file_name').val(e.target.files[0].name);
+            });
+        }
+        $(function() {
+            bs_input_file();
+        });
+
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-offset-3 col-lg-6">
+            <a class="text-center" href="http://{{ server }}">
+                <h3>Анализируем файл приложения под Android</h3>
+            </a>
+            <br><br>
+            <form  enctype="multipart/form-data" action="" method="post">
+                <div class="form-group">
+                    <div class="input-group input-file" style="display: inline-flex; width: 100%">
+                        <input type="file" id="file_obj" name="file_obj"
+                            style="position: absolute; left: 0; opacity: 0; min-height: 100%; width: 6em">
+                        <button type="button" class="btn btn-primary">Выбрать</button>
+                        <input id="file_name" name="file_name" type="text" class="form-control" placeholder='*.apk' readonly>
+                    </div>
+                </div>
+                <button class="btn btn-success">Поехали!</button>
+            </form>
+            <br>
+
+            {% for message in response %}
+                {% if message == "error" %}
+                    <div class="alert alert-danger">
+                    {{ response[message] }}
+                    </div>
+                {% end %}
+                {% if message == "success" %}
+                    {% for key in response[message] %}
+                        {% if response[message][key] %}
+                        <div class="alert alert-success">
+                            <strong>{{ key }}:</strong><br>
+                            {% if isinstance(response[message][key], (set, list)) %}
+                                {% for i in response[message][key] %}
+                                    {{ i }}<br>
+                                {% end %}
+                            {% else %}
+                                {{ response[message][key] }}
+                            {% end %}
+                        </div>
+                        {% else %}
+                        <div class="alert alert-warning">
+                            <strong>{{ key }}:</strong><br>
+                            Нет данных
+                        </div>
+                        {% end %}
+                    {% end %}
+                {% end %}
+            {% end %}
+
+        </div>
+    </div>
+    <br>
+</div>
+</body>
+<footer>
+    <div style="text-align: center"> Тестировал на 8 файлах </div>
+</footer>
+</html>
